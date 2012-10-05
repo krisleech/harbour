@@ -9,4 +9,8 @@ describe Harbour::Port do
     # currently to pass manually start a server on port 3000
     Harbour::Port.new(3000).open?.should be_true
   end
+
+  it '#pid returns process pid' do
+    Harbour::Port.new(3000).pid.should_not be_nil
+  end
 end

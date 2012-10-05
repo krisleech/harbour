@@ -13,7 +13,8 @@ module Harbour
     end
 
     def pid
-
+      return nil unless open?
+      `lsof -P | grep '#{port}' | grep 'listen' | ack '{print $2}'`
     end
 
     def term!(options = {})
