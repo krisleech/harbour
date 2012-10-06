@@ -1,3 +1,5 @@
 Add timeout to pid, since the port may be open but no pid from lsof. Doing this will also allow the sleep(2) to be removed from start_server! in specs.
 add a self.all_ports which lists all open ports, maybe returning Port objects.
 raise exceptions instead of returning nil
+add commands for linux, it should allow other OS's to be added as well.
+Work out if there is a better way to test
