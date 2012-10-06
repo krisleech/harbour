@@ -14,22 +14,29 @@ module Harbour
 
     def pid
       return nil unless open?
-      `lsof -P | grep '#{port}' | grep 'listen' | ack '{print $2}'`
+      `lsof -P | grep ':#{port}' | grep 'LISTEN' | awk '{print $2}'`
     end
 
     def term!(options = {})
-
+      return nil unless open?
+      command "kill #{pid}"
+      ensure_open(options[:timeout] || 10)
     end
 
     def kill!(options = {})
-
-    end
-
-    def self.all_open
-      
+      return nil unless open?
+      command "kill -9 #{pid}"
+      ensure_open(options[:timeout] || 10)
     end
 
     private
+
+    def ensure_open(within = 10)
+      within.times do
+        break if open?
+        sleep(1)
+      end
+    end
 
     def command(_command)
       system "#{_command} > /dev/null"
