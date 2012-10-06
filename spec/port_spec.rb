@@ -22,12 +22,14 @@ describe Harbour::Port do
   it '#term! terminates process listening on port' do
     with_server(port) do
       Harbour::Port.new(3000).term!
+      port_open?(port).should be_false
     end
   end
 
   it '#kill! terminates process listening on port' do
     with_server(port) do
       Harbour::Port.new(3000).kill!
+      port_open?(port).should be_false
     end
   end
 end

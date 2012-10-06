@@ -1,3 +1,5 @@
+require "net/http"
+require "uri"
 require 'harbour'
 
 RSpec.configure do |config|
@@ -23,4 +25,12 @@ end
 def stop_server!(port)
   pid = `lsof -P | grep ':#{port}' | grep 'LISTEN' | awk '{print $2}'`
   system "kill -9 #{pid}"
+end
+
+def port_open?(port)
+  uri = URI.parse("http://localhost:#{port}")
+  response = Net::HTTP.get_print(uri)
+  response.include? 'Hello'
+rescue
+  false
 end
