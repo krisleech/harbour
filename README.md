@@ -6,6 +6,8 @@ With harbour you can:
 * Find the pid of the process listening on a port
 * Kill the process listening on a port
 
+Note: Only works on MacOS, GNU/Linux coming soon...
+
 ## Installation
 
 Add this line to your application's Gemfile:

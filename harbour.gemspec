@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["kris.leech@interkonect.com"]
   gem.description   = %q{Query and terminate processes listening on ports}
   gem.summary       = %q{Query and terminate processes listening on ports}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/krisleech/harbour"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
