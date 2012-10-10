@@ -45,7 +45,7 @@ module Harbour
       within.times do
         break if closed?
         sleep(step)
-        _elasped = _elasped - step
+        _elasped =- step
       end
       raise PortFailedToClose, "Port #{port} did not close within #{within} seconds" if _elasped < 1
     end
