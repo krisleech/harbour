@@ -4,6 +4,8 @@ module Harbour
   class Port
     attr_reader :port
 
+    class PortFailedToClose < StandardError; end
+
     def initialize(port)
       @port = port
     end
@@ -12,30 +14,37 @@ module Harbour
       command "nc -z localhost #{port}"
     end
 
+    def closed?
+      !open?
+    end
+
     def pid
       return nil unless open?
-      `lsof -P | grep ':#{port}' | grep 'LISTEN' | awk '{print $2}'`
+      `lsof -P | grep ':#{port}' | grep 'LISTEN' | awk '{print $2}'`.to_i
     end
 
     def term!(options = {})
       return nil unless open?
-      command "kill #{pid}"
-      ensure_open(options[:timeout] || 10)
+      Process.kill('TERM', pid)
+      ensure_closed!(options[:timeout] || 10)
     end
 
     def kill!(options = {})
       return nil unless open?
-      command "kill -9 #{pid}"
-      ensure_open(options[:timeout] || 10)
+      Process.kill('KILL', pid)
+      ensure_closed!(options[:timeout] || 10)
     end
 
     private
 
-    def ensure_open(within = 10)
+    def ensure_closed!(within = 10, step = 1)
+      _elasped = within
       within.times do
-        break if open?
-        sleep(1)
+        break if closed?
+        sleep(step)
+        _elasped = _elasped - step
       end
+      raise PortFailedToClose, "Port #{port} did not close within #{within} seconds" if _elasped < 1
     end
 
     def command(_command)
