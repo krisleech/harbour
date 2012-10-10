@@ -9,7 +9,7 @@ describe Harbour::Port do
 
   it '#open? returns true if port is open' do
     with_server(port) do
-      Harbour::Port.new(3000).open?.should be_true
+      Harbour::Port.new(port).open?.should be_true
     end
   end
 
@@ -19,16 +19,34 @@ describe Harbour::Port do
     end
   end
 
-  it '#term! terminates process listening on port' do
-    with_server(port) do
-      Harbour::Port.new(3000).term!
-      port_open?(port).should be_false
+  describe '#term!' do
+    pending 'terminates process listening on port' do
+      # Webrick does not die on TERM
+      with_server(port) do
+        Harbour::Port.new(port).term!
+        port_open?(port).should be_false
+      end
+    end
+
+    it 'raises if port fails to close' do
+      # this is fragile, Webrick does not die on TERM, but may do in the future
+      with_server(port) do
+        expect { Harbour::Port.new(port).term! }.to raise_error(Harbour::Port::PortFailedToClose)
+      end
+    end
+
+    it 'trys to kill process if term fails' do
+      # this is fragile, Webrick does not die on TERM, but may do in the future
+      with_server(port) do
+        Harbour::Port.new(port, :try_kill => true).term!
+        port_open?(port).should be_false
+      end
     end
   end
 
   it '#kill! terminates process listening on port' do
     with_server(port) do
-      Harbour::Port.new(3000).kill!
+      Harbour::Port.new(port).kill!
       port_open?(port).should be_false
     end
   end

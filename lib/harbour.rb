@@ -27,6 +27,9 @@ module Harbour
       return nil unless open?
       Process.kill('TERM', pid)
       ensure_closed!(options[:timeout] || 10)
+    rescue PortFailedToClose
+      raise unless options[:try_kill] == true
+      kill!(options)
     end
 
     def kill!(options = {})
